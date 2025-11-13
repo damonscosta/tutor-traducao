@@ -1,0 +1,2 @@
+Atualizacao do API de traducao do Popup e na correcao de texto com o API do google Studio
+correcao do CSS dos textos de traducao no Dark

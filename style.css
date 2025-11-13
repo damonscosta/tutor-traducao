@@ -3,3 +3,8 @@
     flex-direction: column;
     gap: 15px;
 }
+
+.class-form-txt{
+    font-size: 18px;
+    font-weight: 500;
+}

@@ -36,7 +36,8 @@
         const sunIcon = document.getElementById('sun-icon');
 
 
-        // --- CORREÇÃO DE CONFIGURAÇÃO DA API ---
+        // --- CORREÇÃO DE CONFIGURAÇÃO DA 
+        //  ---
         // REMOVEMOS ?key= do final para que a plataforma insira a chave automaticamente.
         const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent";
         const TTS_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent";

@@ -1,10 +1,51 @@
-.class-form{
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f7fafc; transition: background-color 0.3s; }
+        .card { 
+            background-color: white; 
+            border-radius: 1rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        textarea { resize: vertical; min-height: 200px; }
+        .gemini-feedback { background-color: #ecfdf5; border-left: 4px solid #10b981; padding: 1rem; border-radius: 0.5rem; }
+        /* Estilo do Popup */
+        #word-popup {
+            position: absolute;
+            z-index: 50;
+            cursor: pointer;
+        }
+        .sparkle-btn {
+            background-color: #f59e0b; /* Amber 500 */
+            color: white;
+        }
+        .sparkle-btn:hover {
+            background-color: #d97706; /* Amber 600 */
+        }
+        .gemini-summary { border-left: 4px solid #3b82f6; /* Blue 500 */ }
+        .gemini-vocabulary { border-left: 4px solid #ef4444; /* Red 500 */ }
 
-.class-form-txt{
-    font-size: 18px;
-    font-weight: 500;
-}
+        /* DARK MODE STYLES */
+        body.dark { background-color: #1f2937; /* Gray 800 */ }
+        body.dark .card { 
+            background-color: #374151; /* Gray 700 */ 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        }
+        body.dark h1, body.dark h2, body.dark h3, body.dark p, body.dark li { color: #f3f4f6; /* Gray 100 */ }
+        body.dark .text-gray-800 { color: #f3f4f6; }
+        body.dark .text-gray-500 { color: #d1d5db; }
+        body.dark .text-indigo-700 { color: #93c5fd; } /* Blue 300 */
+        body.dark .text-emerald-700 { color: #6ee7b7; } /* Emerald 300 */
+        body.dark textarea { 
+            background-color: #4b5563; /* Gray 600 */
+            color: #f3f4f6;
+            border-color: #4b5563;
+        }
+        body.dark textarea::placeholder { color: #9ca3af; }
+        body.dark .border-b { border-color: #4b5563; }
+        body.dark .gemini-feedback { background-color: #1e3d36; } /* Darker Emerald */
+        body.dark #correction-area { border-color: #b91c1c; } /* Red 700 */
+        body.dark .gemini-summary { border-left-color: #60a5fa; } /* Blue 400 */
+        body.dark .gemini-vocabulary { border-left-color: #fca5a5; } /* Red 300 */
+        body.dark .sparkle-btn {
+            background-color: #d97706; /* Amber 600 */
+        }

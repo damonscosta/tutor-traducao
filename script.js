@@ -12,6 +12,17 @@ const hintContent = document.getElementById('hint-content');
 const errorMessage = document.getElementById('error-message');
 const errorContent = document.getElementById('error-content');
 
+const vocabularyContent = document.getElementById('vocabulary-content');
+const sunIcon = document.getElementById('sun-icon');
+const mainTitleEl = document.getElementById('main-title');
+const sourceTitleEl = document.getElementById('source-title');
+const targetTitleEl = document.getElementById('target-title');
+
+//constantes de idioma
+const LANG_CODES = { EN: "EN", PT: "PT-BR" };
+const LANG_NAMES = { EN: "Inglês", PT: "Português" };
+let isEnToPt = true; // Direção inicial: Inglês para Português
+
 // Elementos para o Popup
 const wordPopup = document.getElementById('word-popup');
 const wordPopupContent = document.getElementById('word-popup-content');
@@ -28,12 +39,13 @@ const readFullTextText = document.getElementById('read-full-text-text');
 const summaryArea = document.getElementById('summary-area');
 const summaryContent = document.getElementById('summary-content');
 const vocabularyArea = document.getElementById('vocabulary-area');
-const vocabularyContent = document.getElementById('vocabulary-content');
+
 
 // Elementos do Dark Mode
 const darkModeToggle = document.getElementById('dark-mode-toggle');
 const moonIcon = document.getElementById('moon-icon');
-const sunIcon = document.getElementById('sun-icon');
+
+
 
 
 // --- CORREÇÃO DE CONFIGURAÇÃO DA API ---
@@ -54,6 +66,69 @@ let currentFullTextButton = null;
 let ttsAbortController = null; // Para cancelar a requisição de fetch
 
 // --- Funções de Controle de Estado da UI ---
+
+// --funcao para alterar o idioma a ser traduzido--
+
+function getLanguages() {
+    const sourceCode = isEnToPt ? LANG_CODES.EN : LANG_CODES.PT;
+    const targetCode = isEnToPt ? LANG_CODES.PT : LANG_CODES.EN;
+    const sourceName = isEnToPt ? LANG_NAMES.EN : LANG_NAMES.PT;
+    const targetName = isEnToPt ? LANG_NAMES.PT : LANG_NAMES.EN;
+    return { sourceCode, targetCode, sourceName, targetName };
+}
+
+function updateUIForLanguageDirection() {
+    const { sourceName, targetName } = getLanguages();
+
+    // Atualiza títulos e placeholders "principal"
+    mainTitleEl.textContent = `Tutor de Tradução: ${sourceName} → ${targetName}`;
+    // 2. Atualiza Título do Painel Fonte (mantendo o SVG do ícone)
+    sourceTitleEl.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 1.3-1.8 2.3-4 2.3-2.2 0-4-1-4-2.3 0-1.3 1.8-2.3 4-2.3 2.2 0 4 1 4 2.3z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11v-1m0 0V9m0 2v1m0 0V13m0-2h1m-1 0H11m1 0h1m-1 0H11m1-4.7c0 1.3 1.8 2.3 4 2.3 2.2 0 4-1 4-2.3 0-1.3-1.8-2.3-4-2.3-2.2 0-4 1-4 2.3z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7.7V7m0 0V6m0 1.7v1m0 0V9m0-1.3h1m-1 0H11m1 0h1m-1 0H11" />
+        </svg>
+        1. Texto Fonte (${sourceName})
+    `;
+    // 3. Atualiza Título do Painel Tradução (mantendo o SVG do ícone)
+    targetNameEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+        </svg>
+        2. Sua Tradução (${targetName})
+    `;
+
+    // 4. Atualiza os placeholders das Text Areas
+    englishSourceEl.placeholder = isEnToPt
+        ? "Exemplo: 'The quick brown fox jumps over the lazy dog.'"
+        : "Exemplo: 'A raposa marrom rápida salta sobre o cão preguiçoso.'";
+
+    portugueseTranslationEl.placeholder = isEnToPt
+        ? "Sua tradução para Português..."
+        : "Sua tradução para Inglês...";
+
+
+}
+
+function swapLanguages() {
+    // 1. Inverte o estado da direção
+    isEnToPt = !isEnToPt;
+
+    // 2. Limpa o texto das caixas para evitar traduções erradas ou confusas
+    englishSourceEl.value = '';
+    portugueseTranslationEl.value = '';
+
+    // 3. Atualiza a UI com os novos rótulos e títulos
+    updateUIForLanguageDirection();
+
+    // 4. Limpa feedback e reseta botões
+    clearFeedback();
+    portugueseTranslationEl.disabled = true;
+    checkButton.disabled = true;
+    startButton.textContent = 'Texto Fonte Atualizado (Clique para Reiniciar)';
+    readFullTextButton.disabled = true;
+}
+
 
 // NEW: Dark Mode Functionality
 function applyDarkMode(isDark) {
@@ -379,16 +454,18 @@ async function fetchGeminiTTS(text, fullTextButton = null, signal = null) {
 // --- API de traducao DeepL ---
 
 async function fetchDeepLTranslation(textoOriginal) {
-    
-    // 1. A sua chave (corrigida, sem o '=')
+
+    // 1. Chave traducao
     const minhaChave = "3ed97480-a195-462a-b894-1143cc6e1c59:fx";
-    
+
     // 2. Usando o proxy 'corsproxy.io' (que sabemos que responde)
     const url = "https://corsproxy.io/?https://api-free.deepl.com/v2/translate";
 
+    const { targetCode } = getLanguages();
+
     const dados = {
         text: [textoOriginal],
-        target_lang: "PT-BR"
+        target_lang: targetCode // Usa o código do idioma alvo baseado na direção atual
     };
 
     try {
@@ -396,7 +473,7 @@ async function fetchDeepLTranslation(textoOriginal) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                
+
                 "Authorization": `DeepL-Auth-Key ${minhaChave}`
             },
             body: JSON.stringify(dados)
@@ -409,7 +486,7 @@ async function fetchDeepLTranslation(textoOriginal) {
             try {
                 const erroJson = JSON.parse(erroTxt);
                 throw new Error(`Erro do DeepL (${resposta.status}): ${erroJson.message || erroTxt}`);
-            } catch(e) {
+            } catch (e) {
                 throw new Error(`Erro do Proxy/DeepL (${resposta.status}): ${erroTxt.substring(0, 150)}...`);
             }
         }
@@ -417,7 +494,7 @@ async function fetchDeepLTranslation(textoOriginal) {
         // Se der certo, vem pra cá
         const resultado = await resposta.json();
         const traducao = resultado.translations[0].text;
-        
+
         return `Tradução (DeepL):\n- ${traducao}`;
 
     } catch (erro) {
@@ -505,19 +582,16 @@ async function readFullText(button) {
 // --- NOVOS RECURSOS LLM ---
 
 async function summarizeText(button) {
-    const englishText = englishSourceEl.value.trim();
-    if (!englishText) {
+    const sourceText = englishSourceEl.value.trim(); // Renomeado para sourceText, mas é o campo 'english-source'
+    if (!sourceText) {
         alertUser("O campo de texto em Inglês está vazio. Cole um texto para resumir.");
         return;
     }
 
-    const systemPrompt = "Você é um assistente de leitura. Sua tarefa é criar um resumo conciso e fluente em Português do texto em Inglês fornecido. O resumo deve ter no máximo 3 frases.";
-    const userQuery = `Texto em Inglês para resumir: "${englishText}"`;
+    const { sourceName, targetName } = getLanguages();
 
-    const payload = {
-        contents: [{ parts: [{ text: userQuery }] }],
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-    };
+    const systemPrompt = `Você é um assistente de leitura. Sua tarefa é criar um resumo conciso e fluente em ${targetName} do texto em ${sourceName} fornecido. O resumo deve ter no máximo 3 frases.`;
+    const userQuery = `Texto em ${sourceName} para resumir: "${sourceText}"`;
 
     try {
         const result = await fetchGeminiContent(payload, button);
@@ -548,14 +622,16 @@ const vocabularySchema = {
 };
 
 async function extractVocabulary(button) {
-    const englishText = englishSourceEl.value.trim();
-    if (!englishText) {
+    const sourceText = englishSourceEl.value.trim();
+    if (!sourceText) {
         alertUser("O campo de texto em Inglês está vazio. Cole um texto para extrair vocabulário.");
         return;
     }
 
-    const systemPrompt = "Você é um analista de texto especializado em identificar o vocabulário mais relevante ou desafiador em um texto em Inglês para um falante de Português. Seu objetivo é retornar uma lista de 5 a 8 termos em formato JSON. Inclua a palavra em Inglês, sua tradução em Português e uma breve definição/contexto para estudo. Retorne APENAS o JSON.";
-    const userQuery = `Texto em Inglês para análise de vocabulário: "${englishText}"`;
+    const { sourceName, targetName } = getLanguages();
+
+    const systemPrompt = `Você é um analista de texto especializado em identificar o vocabulário mais relevante ou desafiador em um texto em ${sourceName} para um falante de ${targetName}. Seu objetivo é retornar uma lista de 5 a 8 termos em formato JSON. Inclua a palavra em ${sourceName}, sua tradução em ${targetName} e uma breve definição/contexto para estudo. Retorne APENAS o JSON.`;
+    const userQuery = `Texto em ${sourceName} para análise de vocabulário: "${sourceText}"`;
 
     const payload = {
         contents: [{ parts: [{ text: userQuery }] }],
@@ -606,54 +682,40 @@ const translationSchema = {
     required: ["correction", "hint"]
 };
 
-const tutorSystemPrompt = `Você é um tutor de idiomas muito experiente e encorajador, especializado em tradução entre Inglês e Português. Sua função é analisar a tradução fornecida pelo usuário. Compare o texto fonte em Inglês com a tradução em Português do usuário. Forneça feedback construtivo e preciso, sempre em Português. Seu output deve ser um objeto JSON. 'correction' deve conter uma análise detalhada da tradução do usuário, destacando pontos fracos e oferecendo a tradução ideal para comparação. 'hint' deve fornecer uma dica útil ou a tradução mais natural para ajudar o usuário a melhorar no próximo trecho.`;
+function getTutorSystemPrompt() {
+    const { sourceName, targetName } = getLanguages();
+
+    return `Você é um tutor de idiomas muito experiente e encorajador, especializado em tradução entre ${sourceName} e ${targetName}. Sua função é analisar a tradução fornecida pelo usuário. Compare o texto fonte em ${sourceName} com a tradução em ${targetName} do usuário. Forneça feedback construtivo e preciso, sempre em Português. Seu output deve ser um objeto JSON. 'correction' deve conter uma análise detalhada da tradução do usuário, destacando pontos fracos e oferecendo a tradução ideal para comparação. 'hint' deve fornecer uma dica útil ou a tradução mais natural para ajudar o usuário a melhorar no próximo trecho.`;
+}
 
 async function checkTranslation() {
     hideWordPopup();
     stopAudio();
     clearFeedback();
-    const englishText = englishSourceEl.value.trim();
-    const portugueseText = portugueseTranslationEl.value.trim();
 
-    if (!englishText || !portugueseText) {
+    const sourceText = englishSourceEl.value.trim(); // Conteúdo do campo fonte
+    const targetText = portugueseTranslationEl.value.trim(); // Conteúdo do campo tradução
+
+    // NOVO: Obtém os idiomas atuais
+    const { sourceName, targetName } = getLanguages();
+
+    if (!sourceText || !targetText) {
         alertUser("Por favor, preencha tanto o Texto Fonte quanto a Sua Tradução.");
         return;
     }
 
     setLoadingButtons(checkButton, true, "Checar Tradução e Obter Dicas");
 
-    const userQuery = `Texto Original (Inglês): "${englishText}"\n\nMinha Tradução (Português): "${portugueseText}"`;
+    const userQuery = `Texto Original (${sourceName}): "${sourceText}"\n\nMinha Tradução (${targetName}): "${targetText}"`;
 
     const payload = {
         contents: [{ parts: [{ text: userQuery }] }],
-        systemInstruction: { parts: [{ text: tutorSystemPrompt }] },
+        systemInstruction: { parts: [{ text: getTutorSystemPrompt() }] }, // NOVO: Usa a função
         generationConfig: {
             responseMimeType: "application/json",
             responseSchema: translationSchema
         },
     };
-
-    try {
-        const result = await fetchGeminiContent(payload);
-        const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-        const feedback = JSON.parse(jsonText);
-
-        if (feedback.correction) {
-            correctionContent.innerHTML = feedback.correction.replace(/\n/g, '<br>');
-            correctionArea.classList.remove('hidden');
-        } else { correctionArea.classList.add('hidden'); }
-
-        if (feedback.hint) {
-            hintContent.innerHTML = feedback.hint.replace(/\n/g, '<br>');
-            hintArea.classList.remove('hidden');
-        } else { hintArea.classList.add('hidden'); }
-
-    } catch (e) {
-        console.error("Erro final:", e);
-        alertUser(e.message || "Ocorreu um erro inesperado ao analisar a tradução.");
-    } finally {
-        setLoadingButtons(checkButton, false, "Checar Tradução e Obter Dicas");
-    }
 }
 
 

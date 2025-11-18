@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+
+    </header>
+
     <!-- Configurações Firebase & Auth (Necessário para o ambiente) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -18,7 +23,7 @@
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        
+
         // Inicialização do Firebase (globalmente acessível no JS abaixo)
         window.app = initializeApp(firebaseConfig);
         window.db = getFirestore(window.app);
@@ -44,88 +49,118 @@
                 window.userId = crypto.randomUUID();
             }
         }
-        
+
         // Chamar a inicialização ao carregar
         initializeAuth();
     </script>
 
     <div class="container mx-auto p-4 md:p-8 relative">
         <header class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-gray-800 transition-colors duration-300">Tutor Interativo de Tradução (Inglês ↔ Português)</h1>
-            
-            <!-- Botão de Modo Escuro -->
-            <button id="dark-mode-toggle" onclick="toggleDarkMode()" class="p-2 rounded-full bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition duration-300" aria-label="Alternar Modo Escuro">
-                <!-- Ícone da Lua (padrão escuro) -->
-                <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9 9 0 008.354-5.646z" />
-                </svg>
-                <!-- Ícone do Sol (padrão claro) -->
-                <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-            </button>
-            <!-- Fim Botão Modo Escuro -->
+            <h1 id="main-title" class="text-3xl font-bold text-gray-800 transition-colors duration-300">Tutor Interativo
+                de Tradução (Inglês ↔ Português)</h1>
+
+            <div class="flex space-x-2">
+
+                <button id="swap-button" onclick="swapLanguages()"
+                    class="p-2 rounded-full bg-indigo-500 text-white hover:bg-indigo-600 dark:bg-indigo-700 dark:text-gray-200 dark:hover:bg-indigo-600 transition duration-300"
+                    aria-label="Alternar Idiomas">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                </button>
+                <button id="dark-mode-toggle" onclick="toggleDarkMode()"
+                    class="p-2 rounded-full bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition duration-300"
+                    aria-label="Alternar Modo Escuro">
+                </button>
+            </div>
         </header>
 
         <div class="flex flex-col lg:flex-row gap-6">
-            
+
             <!-- Painel de Fonte em Inglês -->
             <div class="lg:w-1/2">
                 <div class="card p-6">
                     <h2 class="text-xl font-semibold mb-3 text-indigo-700 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 1.3-1.8 2.3-4 2.3-2.2 0-4-1-4-2.3 0-1.3 1.8-2.3 4-2.3 2.2 0 4 1 4 2.3z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11v-1m0 0V9m0 2v1m0 0V13m0-2h1m-1 0H11m1 0h1m-1 0H11m1-4.7c0 1.3 1.8 2.3 4 2.3 2.2 0 4-1 4-2.3 0-1.3-1.8-2.3-4-2.3-2.2 0-4 1-4 2.3z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7.7V7m0 0V6m0 1.7v1m0 0V9m0-1.3h1m-1 0H11m1 0h1m-1 0H11" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 11c0 1.3-1.8 2.3-4 2.3-2.2 0-4-1-4-2.3 0-1.3 1.8-2.3 4-2.3 2.2 0 4 1 4 2.3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 11v-1m0 0V9m0 2v1m0 0V13m0-2h1m-1 0H11m1 0h1m-1 0H11m1-4.7c0 1.3 1.8 2.3 4 2.3 2.2 0 4-1 4-2.3 0-1.3-1.8-2.3-4-2.3-2.2 0-4 1-4 2.3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 7.7V7m0 0V6m0 1.7v1m0 0V9m0-1.3h1m-1 0H11m1 0h1m-1 0H11" />
                         </svg>
                         1. Texto Fonte (Inglês)
                     </h2>
-                    <p class="text-sm text-gray-500 mb-2">Cole o trecho do livro ou artigo que deseja traduzir abaixo. <span class="font-bold text-indigo-500">Dica: Dê um clique duplo em qualquer palavra aqui para ver a tradução e ouvi-la!</span></p>
-                    <textarea id="english-source" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150" placeholder="Exemplo: 'The quick brown fox jumps over the lazy dog.'" rows="8"></textarea>
-                    
+                    <p class="text-sm text-gray-500 mb-2">Cole o trecho do livro ou artigo que deseja traduzir abaixo.
+                        <span class="font-bold text-indigo-500">Dica: Dê um clique duplo em qualquer palavra aqui para
+                            ver a tradução e ouvi-la!</span>
+                    </p>
+                    <textarea id="english-source"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+                        placeholder="Exemplo: 'The quick brown fox jumps over the lazy dog.'" rows="8"></textarea>
+
                     <!-- BOTÃO DE LEITURA COMPLETA (AGORA UM TOGGLE DE PLAY/STOP) -->
-                    <button id="read-full-text-button" onclick="readFullText(this)" class="w-full mt-4 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-[1.01] shadow-md flex items-center justify-center disabled:opacity-50">
+                    <button id="read-full-text-button" onclick="readFullText(this)"
+                        class="w-full mt-4 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-[1.01] shadow-md flex items-center justify-center disabled:opacity-50">
                         <!-- Speaker Icon -->
-                        <svg id="full-text-speaker-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9c2.5 2.5 2.5 6.566 0 9.066M17 12H3m12 0a5 5 0 01-10 0 5 5 0 0110 0z" />
+                        <svg id="full-text-speaker-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9c2.5 2.5 2.5 6.566 0 9.066M17 12H3m12 0a5 5 0 01-10 0 5 5 0 0110 0z" />
                         </svg>
                         <span id="read-full-text-text">Ouvir Texto Completo</span>
                     </button>
                     <!-- FIM NOVO BOTÃO -->
 
-                    <button id="start-button" onclick="startTranslation()" class="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-[1.01] shadow-lg">
+                    <button id="start-button" onclick="startTranslation()"
+                        class="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-[1.01] shadow-lg">
                         Texto Fonte Atualizado (Clique para Reiniciar)
                     </button>
-                    
+
                     <!-- NOVOS RECURSOS GEMINI -->
                     <div class="mt-4 grid grid-cols-1 gap-2">
-                        <button onclick="summarizeText(this)" class="sparkle-btn font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-[1.01] shadow-md disabled:opacity-50">
+                        <button onclick="summarizeText(this)"
+                            class="sparkle-btn font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-[1.01] shadow-md disabled:opacity-50">
                             ✨ Resumir Texto (Inglês)
                         </button>
-                        <button onclick="extractVocabulary(this)" class="sparkle-btn font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-[1.01] shadow-md disabled:opacity-50">
+                        <button onclick="extractVocabulary(this)"
+                            class="sparkle-btn font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-[1.01] shadow-md disabled:opacity-50">
                             ✨ Extrair Vocabulário Chave
                         </button>
                     </div>
                     <!-- FIM NOVOS RECURSOS GEMINI -->
                 </div>
             </div>
-            
+
             <!-- Painel de Tradução e Feedback (Português) -->
             <div class="lg:w-1/2">
                 <div class="card p-6">
                     <h2 class="text-xl font-semibold mb-3 text-emerald-700 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
                         2. Sua Tradução (Português)
                     </h2>
-                    <p class="text-sm text-gray-500 mb-2">Escreva sua tradução do texto em Inglês. Use o botão abaixo para checar seu trabalho.</p>
-                    <textarea id="portuguese-translation" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 transition duration-150" placeholder="Sua tradução..." rows="8"></textarea>
-                    
-                    <button id="check-button" onclick="checkTranslation()" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-[1.01] shadow-lg flex items-center justify-center disabled:opacity-50">
-                        <svg id="loading-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <p class="text-sm text-gray-500 mb-2">Escreva sua tradução do texto em Inglês. Use o botão abaixo
+                        para checar seu trabalho.</p>
+                    <textarea id="portuguese-translation"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 transition duration-150"
+                        placeholder="Sua tradução..." rows="8"></textarea>
+
+                    <button id="check-button" onclick="checkTranslation()"
+                        class="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-[1.01] shadow-lg flex items-center justify-center disabled:opacity-50">
+                        <svg id="loading-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
                         </svg>
                         <span id="check-button-text">Checar Tradução e Obter Dicas</span>
                     </button>
@@ -135,22 +170,27 @@
 
         <!-- Painel de Feedback do Gemini -->
         <div id="feedback-panel" class="mt-6">
-            <h2 class="text-2xl font-semibold mb-4 text-gray-800 border-b pb-2 transition-colors duration-300">Feedback do Tutor Gemini</h2>
-            
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800 border-b pb-2 transition-colors duration-300">Feedback
+                do Tutor Gemini</h2>
+
             <div id="summary-area" class="card p-4 mb-4 hidden gemini-summary">
                 <h3 class="text-lg font-bold text-blue-700 mb-2 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m-5 4h4a2 2 0 002-2V6a2 2 0 00-2-2H9a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m-5 4h4a2 2 0 002-2V6a2 2 0 00-2-2H9a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     Resumo do Texto Fonte (Português)
                 </h3>
                 <div id="summary-content" class="text-gray-700 leading-relaxed"></div>
             </div>
-            
+
             <div id="vocabulary-area" class="card p-4 mb-4 hidden gemini-vocabulary">
                 <h3 class="text-lg font-bold text-red-700 mb-2 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
                     Vocabulário Chave
                 </h3>
@@ -159,8 +199,11 @@
 
             <div id="correction-area" class="card p-4 mb-4 hidden">
                 <h3 class="text-lg font-bold text-red-700 mb-2 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                            clip-rule="evenodd" />
                     </svg>
                     Correção Detalhada
                 </h3>
@@ -169,37 +212,48 @@
 
             <div id="hint-area" class="card p-4 gemini-feedback hidden">
                 <h3 class="text-lg font-bold text-green-700 mb-2 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707l-.707-.707V8a6 6 0 00-6-6zM10 18a3 3 0 110-6 3 3 0 010 6z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path
+                            d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707l-.707-.707V8a6 6 0 00-6-6zM10 18a3 3 0 110-6 3 3 0 010 6z" />
                     </svg>
                     Dica/Tradução Sugerida
                 </h3>
                 <div id="hint-content" class="text-gray-700 leading-relaxed"></div>
             </div>
 
-            <div id="error-message" class="card p-4 bg-red-100 border-l-4 border-red-500 text-red-700 hidden" role="alert">
+            <div id="error-message" class="card p-4 bg-red-100 border-l-4 border-red-500 text-red-700 hidden"
+                role="alert">
                 <p class="font-bold">Erro de Processamento</p>
                 <p id="error-content">Não foi possível conectar ou processar a tradução. Tente novamente.</p>
             </div>
         </div>
     </div>
-    
+
     <!-- Word Translation Popup (Novo Elemento com botão de áudio) -->
-    <div id="word-popup" onclick="hideWordPopup()" class="hidden z-50 p-3 card border-2 border-indigo-500 max-w-xs transition duration-300 absolute" style="left: 0; top: 0;">
+    <div id="word-popup" onclick="hideWordPopup()"
+        class="hidden z-50 p-3 card border-2 border-indigo-500 max-w-xs transition duration-300 absolute"
+        style="left: 0; top: 0;">
         <div class="flex justify-between items-center mb-1">
             <p class="font-bold text-sm text-indigo-700">Tradução Rápida:</p>
             <!-- Botão de Alto-falante. Usamos event.stopPropagation() para evitar fechar o popup ao clicar -->
-            <button id="speak-button" onclick="event.stopPropagation(); speakWord(this.dataset.word, this);" class="text-indigo-500 hover:text-indigo-700 disabled:opacity-50" data-word="" aria-label="Ouvir Palavra" disabled>
+            <button id="speak-button" onclick="event.stopPropagation(); speakWord(this.dataset.word, this);"
+                class="text-indigo-500 hover:text-indigo-700 disabled:opacity-50" data-word=""
+                aria-label="Ouvir Palavra" disabled>
                 <!-- Speaker Icon -->
-                <svg id="speaker-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9c2.5 2.5 2.5 6.566 0 9.066M17 12H3m12 0a5 5 0 01-10 0 5 5 0 0110 0z" />
+                <svg id="speaker-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9c2.5 2.5 2.5 6.566 0 9.066M17 12H3m12 0a5 5 0 01-10 0 5 5 0 0110 0z" />
                 </svg>
                 <!-- Loading Spinner para áudio -->
-                <span id="speaker-loading-spinner" class="animate-spin h-5 w-5 hidden" style="border: 4px solid currentColor; border-top-color: transparent; border-radius: 50%;"></span>
+                <span id="speaker-loading-spinner" class="animate-spin h-5 w-5 hidden"
+                    style="border: 4px solid currentColor; border-top-color: transparent; border-radius: 50%;"></span>
             </button>
         </div>
         <div id="word-popup-content" class="text-gray-700 text-sm"></div>
     </div>
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>

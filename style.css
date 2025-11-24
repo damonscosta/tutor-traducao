@@ -1,76 +1,154 @@
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f7fafc; transition: background-color 0.3s; }
-        .card { 
-            background-color: white; 
-            border-radius: 1rem; 
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
-            transition: background-color 0.3s, box-shadow 0.3s;
-        }
-        textarea { resize: vertical; min-height: 200px; }
-        .gemini-feedback { background-color: #ecfdf5; border-left: 4px solid #10b981; padding: 1rem; border-radius: 0.5rem; }
-        /* Estilo do Popup */
-        #word-popup {
-            position: absolute;
-            z-index: 50;
-            cursor: pointer;
-        }
-        .sparkle-btn {
-            background-color: #f59e0b; /* Amber 500 */
-            color: white;
-        }
-        .sparkle-btn:hover {
-            background-color: #d97706; /* Amber 600 */
-        }
-        .gemini-summary { border-left: 4px solid #3b82f6; /* Blue 500 */ }
-        .gemini-vocabulary { border-left: 4px solid #ef4444; /* Red 500 */ }
-
-        /* DARK MODE STYLES */
-        body.dark { background-color: #1f2937; /* Gray 800 */ }
-        body.dark .card { 
-            background-color: #374151; /* Gray 700 */ 
-            box-shadow: 0 10px 15px -3px rgba(255, 254, 254, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-        }
-        body.dark h1, body.dark h2, body.dark h3, body.dark p, body.dark li { color: #f3f4f6; /* Gray 100 */ }
-        body.dark .text-gray-800 { color: #f3f4f6; }
-        body.dark .text-gray-500 { color: #d1d5db; }
-        body.dark .text-indigo-700 { color: #93c5fd; } /* Blue 300 */
-        body.dark .text-emerald-700 { color: #6ee7b7; } /* Emerald 300 */
-        body.dark textarea { 
-            background-color: #4b5563; /* Gray 600 */
-            color: #f3f4f6;
-            border-color: #4b5563;
-        }
-        body.dark textarea::placeholder { color: #9ca3af; }
-        body.dark .border-b { border-color: #4b5563; }
-        body.dark .gemini-feedback { background-color: #1e3d36; } /* Darker Emerald */
-        body.dark #correction-area { border-color: #b91c1c; } /* Red 700 */
-        body.dark .gemini-summary { border-left-color: #60a5fa; } /* Blue 400 */
-        body.dark .gemini-vocabulary { border-left-color: #fca5a5; } /* Red 300 */
-
-
-        /* --- Correção do Popup no Modo Escuro --- */
-
-/* 1. A CORREÇÃO PRINCIPAL: O texto do conteúdo (a tradução/erro) que estava sumindo */
-body.dark #word-popup-content {
-    color: #f3f4f6; /* Gray 100 (branco) */
+:root {
+    --bg: #f7fafc;
+    --card: #fff;
+    --text: #111827;
+    --muted: #6b7280;
+    --accent: #4f46e5;
 }
 
-/* 2. (RECOMENDADO) Deixa a borda do popup clara também */
-/* O HTML usa 'border-indigo-500', que fica escuro */
-body.dark #word-popup {
-    border-color: #a5b4fc; /* Borda Indigo clara */
+body {
+    font-family: Inter, system-ui, Segoe UI, Arial;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 20px;
 }
 
-/* 3. (RECOMENDADO) Deixa o título "Tradução Rápida:" branco, em vez de azul claro, para melhor contraste */
-body.dark #word-popup .text-indigo-700 {
-    color: #f3f4f6; /* Título branco */
+.container {
+    max-width: 980px;
+    margin: 0 auto;
 }
 
-/* --- Correção do Texto de Feedback no Modo Escuro --- */
-/* Força o texto dentro dos 4 painéis de feedback a ficar branco */
-body.dark #correction-content,
-body.dark #hint-content,
-body.dark #summary-content,
-body.dark #vocabulary-content {
-    color: #f3f4f6; /* Gray 100 (branco) */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.header h1 {
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.panel {
+    background: var(--card);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
+    margin-bottom: 16px;
+}
+
+.row {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+}
+
+button {
+    background: var(--accent);
+    color: white;
+    border: 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+button[disabled] {
+    opacity: 0.55;
+    cursor: default;
+}
+
+.hint {
+    color: var(--muted);
+    margin-top: 8px;
+}
+
+.word-popup {
+    position: absolute;
+    z-index: 9999;
+    width: 360px;
+    background: var(--card);
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.15);
+}
+
+.word-popup .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.word-popup .popup-content {
+    color: var(--text);
+    font-size: 0.95rem;
+    max-height: 240px;
+    overflow: auto;
+}
+
+.popup-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+.error {
+    background: #fff1f2;
+    border-left: 4px solid #ef4444;
+    padding: 10px;
+    border-radius: 6px;
+    color: #7f1d1d;
+}
+
+.hint-box {
+    background: #ecfeff;
+    border-left: 4px solid #06b6d4;
+    padding: 10px;
+    border-radius: 6px;
+    color: #0f172a;
+}
+
+.footer {
+    opacity: 0.8;
+    text-align: center;
+    margin-top: 12px;
+}
+
+/* Dark mode */
+body.dark {
+    background: #0b1220;
+    color: #e6eef8;
+}
+
+body.dark .panel {
+    background: #0f1724;
+}
+
+body.dark textarea {
+    background: #0b1220;
+    color: #e6eef8;
+    border: 1px solid #1f2937;
+}
+
+body.dark .word-popup {
+    background: #0b1220;
+    border-color: #7c3aed;
 }

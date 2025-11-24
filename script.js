@@ -69,20 +69,20 @@ function getSelectedWord(textarea) {
 }
 
 // ---------- DeepL Translation ----------
-async function fetchDeepL(text, target='PT'){
-  const resp = await fetch('/api/translate', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, target })
-  });
-  const contentType = resp.headers.get('content-type') || '';
-  if (!resp.ok) {
-    const body = await resp.text();
-    throw new Error(body);
-  }
-  const json = await resp.json(); // se o server retornar JSON
-  // no nosso server retornamos o corpo do DeepL (JSON) como texto — por isso parsing:
-  return json.translations?.[0]?.text ?? JSON.stringify(json);
+async function fetchDeepL(text, target = 'PT') {
+    const resp = await fetch('http://localhost:3000/api/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, target })
+    });
+    const contentType = resp.headers.get('content-type') || '';
+    if (!resp.ok) {
+        const body = await resp.text();
+        throw new Error(body);
+    }
+    const json = await resp.json(); // se o server retornar JSON
+    // no nosso server retornamos o corpo do DeepL (JSON) como texto — por isso parsing:
+    return json.translations?.[0]?.text ?? JSON.stringify(json);
 }
 
 
@@ -162,14 +162,42 @@ async function translateFullHandler() {
 }
 
 // ---------- Simple "check" (placeholder educational feedback) ----------
-function checkTranslationHandler() {
+// ---------- Check Translation with AI ----------
+async function checkTranslationHandler() {
     hideError();
+    hideHint(); // Limpa dica anterior
+
     const source = englishSourceEl.value.trim();
     const user = portugueseTranslationEl.value.trim();
-    if (!source || !user) { showError('Cole o texto em Inglês e escreva sua tradução antes de checar.'); return; }
-    // Aqui você pode integrar LLM para checar; por enquanto mostramos dicas simples
-    const hint = '<strong>Dica rápida:</strong> Compare tempos verbais e observe falsos cognatos. Exemplo: "actually" ≠ "atualmente"';
-    showHint(hint);
+
+    if (!source || !user) {
+        showError('Cole o texto em Inglês e escreva sua tradução antes de checar.');
+        return;
+    }
+
+    // Muda o texto do botão para indicar carregamento
+    const originalBtnText = checkButton.textContent;
+    checkButton.disabled = true;
+    checkButton.textContent = "Analisando...";
+
+    try {
+        const resp = await fetch('http://localhost:3000/api/check', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ source, userTranslation: user })
+        });
+
+        if (!resp.ok) throw new Error('Erro ao conectar com o tutor.');
+
+        const feedbackHtml = await resp.text();
+        showHint(feedbackHtml);
+
+    } catch (e) {
+        showError('Erro ao obter feedback: ' + e.message);
+    } finally {
+        checkButton.disabled = false;
+        checkButton.textContent = originalBtnText;
+    }
 }
 
 // ---------- TTS (Web Speech API) ----------

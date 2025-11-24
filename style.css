@@ -152,3 +152,19 @@ body.dark .word-popup {
     background: #0b1220;
     border-color: #7c3aed;
 }
+
+
+/* Força a cor do texto interno do popup para claro */
+body.dark .word-popup .popup-content {
+    color: #e6eef8;
+}
+
+/* Opcional: Deixa os títulos ("Palavra:", "Frase:") com destaque */
+body.dark .word-popup strong {
+    color: #a5b4fc; /* Um tom de azul claro/roxo */
+}
+
+/* Ajusta a linha divisória para não ficar muito brilhante ou invisível */
+body.dark .word-popup hr {
+    border-color: #374151;
+}

@@ -1,50 +1,50 @@
-# 🇬🇧 Tutor de Tradução com IA
+🇺🇸 Tutor de Tradução (Meu Projeto de Estudos)
+E aí! Esse é um projeto que eu criei para me ajudar a estudar inglês e, ao mesmo tempo, treinar programação. A ideia básica é ter um lugar onde eu possa colar textos em inglês, tentar traduzir e receber um feedback na hora.
 
-> Uma aplicação web interativa que utiliza Inteligência Artificial para auxiliar no aprendizado de inglês, fornecendo traduções contextuais e feedback gramatical personalizado.
+Basicamente, é um "professor particular" de inglês usando Inteligência Artificial.
 
-![Status do Projeto](https://img.shields.io/badge/Status-Em_Desenvolvimento-yellow)
-![Licença](https://img.shields.io/badge/License-MIT-blue)
+🤔 Por que eu fiz isso?
+Eu queria uma ferramenta onde eu não precisasse ficar saindo da tela toda hora pra ir no Google Tradutor. Queria algo que me deixasse selecionar uma palavra e já ver o significado ali mesmo, e que também me dissesse se a minha tradução da frase completa estava boa ou não.
 
-## 🎯 Sobre o Projeto
+🛠️ O que eu coloquei no projeto
+Fui implementando as coisas aos poucos e agora o projeto tem isso aqui:
 
-O **Tutor de Tradução** não é apenas um tradutor. Ele foi desenvolvido para resolver uma dor comum de estudantes de idiomas: a falta de feedback imediato sobre suas tentativas de tradução.
+Tradução rápida (Popup): Se você selecionar uma palavra ou frase no texto e clicar em "Traduzir Seleção", aparece um popup flutuante com a tradução. Dá até pra ouvir a pronúncia da palavra!
 
-A aplicação permite que o usuário estude textos em inglês, traduza trechos específicos ou o texto completo, e o mais importante: **submeta sua própria tradução para análise de uma IA**, recebendo correções e dicas como se fosse um professor particular.
+Professor IA (Gemini): Essa é a parte mais legal. Eu integrei com a API do Google Gemini. Quando você clica em "Checar Tradução", a IA lê o que você escreveu e te dá dicas de como melhorar, igual um professor corrigindo lição de casa.
 
-### ✨ Funcionalidades Principais
+Tradução Completa (DeepL): Se bater a preguiça ou dúvida, tem um botão que usa a API do DeepL pra traduzir o texto todo de uma vez com qualidade.
 
-* **Tradução Contextual (Popup):** Selecione qualquer palavra ou frase para ver a tradução imediata sem sair do contexto.
-* **Feedback Inteligente (AI):** Integração com a **Google Gemini API** para analisar a tradução do usuário e explicar erros gramaticais ou sugerir melhorias de vocabulário.
-* **Tradução de Texto Completo:** Integração com a **DeepL API** para traduções de alta precisão de grandes blocos de texto.
-* **Text-to-Speech (TTS):** Prática de listening utilizando a Web Speech API nativa do navegador para ler o texto original.
-* **Interface Adaptável:** Design responsivo com suporte a **Modo Escuro (Dark Mode)** para conforto visual.
+Modo Escuro: Porque ninguém merece ficar com a tela branca na cara de noite, né? Já deixei salvando a preferência no navegador.
 
-## 🛠️ Tecnologias Utilizadas
+Text-to-Speech: Dá pra ouvir o computador lendo o texto original em inglês pra treinar o listening.
 
-Este projeto foi construído utilizando uma arquitetura moderna e limpa:
+💻 Como faz pra rodar?
+Como eu usei umas APIs pagas/privadas (DeepL e Gemini), precisei criar um servidorzinho em Node.js pra esconder as chaves de segurança. Então não dá pra só abrir o HTML direto.
 
-**Front-end:**
-* ![HTML5](https://img.shields.io/badge/HTML5-orange?style=flat-square&logo=html5&logoColor=white)
-* ![CSS3](https://img.shields.io/badge/CSS3-blue?style=flat-square&logo=css3&logoColor=white) (Variáveis CSS, Flexbox)
-* ![JavaScript](https://img.shields.io/badge/JavaScript-yellow?style=flat-square&logo=javascript&logoColor=white) (ES6+, Fetch API, DOM Manipulation)
+Baixa o projeto: Clona aí o repositório ou baixa os arquivos.
 
-**Back-end:**
-* ![Node.js](https://img.shields.io/badge/Node.js-green?style=flat-square&logo=node.js&logoColor=white)
-* ![Express](https://img.shields.io/badge/Express-lightgrey?style=flat-square&logo=express&logoColor=black) (Proxy Server para segurança das chaves de API)
-* **APIs Externas:** Google Gemini (Generative AI) e DeepL.
+Instala as dependências: Abre o terminal na pasta e roda:
 
-## 🚀 Como Rodar o Projeto
+Bash
 
-### Pré-requisitos
-Antes de começar, você precisa ter instalado em sua máquina:
-* [Node.js](https://nodejs.org/en/) (v18 ou superior)
-* Chaves de API para o **DeepL** e **Google Gemini**.
+npm install
+(Isso vai instalar o express, cors, dotenv e o node-fetch que eu usei).
 
-### Instalação
+Configura as chaves:
 
-1. **Clone o repositório**
-   ```bash
-   git clone [https://github.com/seu-usuario/tutor-traducao.git](https://github.com/seu-usuario/tutor-traducao.git)
-   cd tutor-traducao
+Cria um arquivo chamado .env na raiz (tem um .env.exemple lá pra ajudar).
 
+Coloca suas chaves lá: DEEPL_KEY e GEMINI_KEY.
 
+Roda o servidor:
+
+Bash
+
+npm start
+Acessa: Abre o navegador em http://localhost:3000.
+
+📝 Tecnologias que usei
+Front: HTML simples, CSS (tentei deixar bonitinho com variáveis) e JavaScript puro (Vanilla JS).
+
+Back: Node.js com Express (foi necessário pra fazer o proxy das APIs e não expor minhas chaves).

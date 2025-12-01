@@ -63,10 +63,22 @@ app.post('/api/check', async (req, res) => {
 
     // Prompt para o Gemini agir como professor
     const prompt = `
-      Atue como um professor de inglês experiente.
+      Aja como um revisor de traduções técnico e direto.
       Texto original em inglês: "${source}"
       Tradução do aluno em português: "${userTranslation}"
-      Forneça feedback construtivo em português, destacando erros e sugerindo melhorias.
+
+      Analise e retorne APENAS um código HTML (sem markdown, sem \`\`\`) seguindo este formato:
+      <h3>Nota: [Dê uma nota de 0 a 10]</h3>
+      <ul>
+        <li><strong>[Trecho original]</strong> -> <strong>[Melhor tradução]</strong>: [Explicação ultra curta do erro ou melhoria].</li>
+        </ul>
+      <p><em>Resumo: [Uma frase curta sobre a qualidade geral].</em></p>
+
+      Regras:
+      1. NÃO use introduções como "Olá", "Parabéns" ou "Aqui está".
+      2. Se estiver perfeito, diga apenas "Tradução perfeita!" e a nota.
+      3. Foque apenas nos erros ou melhorias de vocabulário
+      4. Seja sucinto e direto ao ponto.
     `;
 
     // Chamada à API do Gemini (REST via node-fetch)

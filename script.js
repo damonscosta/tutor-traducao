@@ -79,7 +79,7 @@ async function fetchDeepL(text, target = 'PT') {
         throw new Error(body);
     }
     const json = await resp.json(); // se o server retornar JSON
-    // no nosso server retornamos o corpo do DeepL (JSON) como texto — por isso parsing:
+    // Extrai a tradução do JSON retornado
     return json.translations?.[0]?.text ?? JSON.stringify(json);
 }
 
@@ -173,7 +173,7 @@ async function checkTranslationHandler() {
         return;
     }
 
-    // Muda o texto do botão para indicar carregamento
+  // Disable button and show loading
     const originalBtnText = checkButton.textContent;
     checkButton.disabled = true;
     checkButton.textContent = "Analisando...";
@@ -183,6 +183,7 @@ async function checkTranslationHandler() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ source, userTranslation: user })
+            
         });
 
         if (!resp.ok) throw new Error('Erro ao conectar com o tutor.');

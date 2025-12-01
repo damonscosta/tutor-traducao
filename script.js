@@ -68,7 +68,7 @@ function getSelectedWord(textarea) {
 
 // ---------- DeepL Translation ----------
 async function fetchDeepL(text, target = 'PT') {
-    const resp = await fetch('http://localhost:3000/api/translate', {
+    const resp = await fetch('/api/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, target })
@@ -179,7 +179,7 @@ async function checkTranslationHandler() {
     checkButton.textContent = "Analisando...";
 
     try {
-        const resp = await fetch('http://localhost:3000/api/check', {
+        const resp = await fetch('/api/check', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ source, userTranslation: user })

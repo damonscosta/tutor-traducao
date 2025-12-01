@@ -1,10 +1,8 @@
-// Versão reescrita e organizada do Tutor de Tradução
-// Recursos: botão "Traduzir Seleção", popup com tradução palavra+frase,
-// tradução do texto inteiro (DeepL via proxy), TTS via Web Speech API, dark mode.
+
 
 // ---------- Configurações ----------
-const DEEPL_PROXY = "/api/translate"; // rota do servidor que criamos
-const DEEPL_AUTH_KEY = ""; // NÃO deixar chave no cliente
+const DEEPL_PROXY = "/api/translate"; // rota do servidor proxy para DeepL
+const DEEPL_AUTH_KEY = "";        // chave de autenticação DeepL (não usada no client, apenas no servidor)
 
 
 // ---------- DOM ----------

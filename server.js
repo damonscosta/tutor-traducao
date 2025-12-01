@@ -75,10 +75,10 @@ app.post('/api/check', async (req, res) => {
       <p><em>Resumo: [Uma frase curta sobre a qualidade geral].</em></p>
 
       Regras:
-      1. NÃO use introduções como "Olá", "Parabéns" ou "Aqui está".
+      1. Forneça onde houver erros ou melhorias claras.
       2. Se estiver perfeito, diga apenas "Tradução perfeita!" e a nota.
       3. Foque apenas nos erros ou melhorias de vocabulário
-      4. Seja sucinto e direto ao ponto.
+      
     `;
 
     // Chamada à API do Gemini (REST via node-fetch)

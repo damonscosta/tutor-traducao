@@ -49,7 +49,7 @@ app.post('/api/translate', async (req, res) => {
 
 
 
-const PORT = process.env.PORT || 3000;
+
 
 // --- Adicione isso no seu server.js ---
 
@@ -110,7 +110,7 @@ app.post('/api/check', async (req, res) => {
   }
 });
 
-
+const PORT = process.env.PORT || 3000;
 
 if (require.main === module) {
     app.listen(PORT, () => {

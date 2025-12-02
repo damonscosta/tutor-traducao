@@ -11,8 +11,8 @@ app.use(express.static(__dirname));
 
 const DEEPL_KEY = process.env.DEEPL_KEY;
 if (!DEEPL_KEY) {
-  console.error('ERRO: defina DEEPL_KEY no arquivo .env');
-  process.exit(1);
+  console.error('ERRO: defina DEEPL_KEY nas variáveis de ambiente do Vercel');
+
 }
 
 // DeepL API endpoint

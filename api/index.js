@@ -78,6 +78,7 @@ app.post('/api/check', async (req, res) => {
       1. Forneça onde houver erros ou melhorias claras.
       2. Se estiver perfeito, diga apenas "Tradução perfeita!" e a nota.
       3. Foque apenas nos erros ou melhorias de vocabulário
+      4. Nao corrigir erro de acentuacao ou pontuacao.
       
     `;
 
